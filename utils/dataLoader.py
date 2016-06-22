@@ -1,36 +1,44 @@
-class dataLoader(object):
-    def __init__(self, id_filepath, content_filepath):
-        self.pc_relations = self.readIDFile(id_filepath) # parent-child relations
-        self.ic_relations = self.readContentFile(content_filepath) #id-content relations
-        self.vocab = self.createVocab(self.ic_relations)
+"""
+Data loader class that parses the reddit data into a format suitable for the model.
+"""
+import pickle
 
-    def readIDFile(self, path):
-        relations = {}
-        with open(path,'r') as f:
-            for line in f.readlines():
-                child, parent = line.strip().split()
-                if not parent[0]=='x': #Parent is not a post-id.
-                    relations[child] = parent
-        return relations
+class dataLoader(object):
+    '''
+    Class to load the tsv data files and load vocabulary.
+    '''
+    def __init__(self, content_filepath, vocab_filepath):
+        '''
+        class initializer function.
+        '''
+        self.contexts, self.responses = self.readContentFile(content_filepath) #id-content relations
+        self.vocab = self.createVocab(self.contexts, self.responses, vocab_filepath)
 
     def readContentFile(self, path):
-        relations = {}
+        '''
+        read the tsv file contents and create the context and response pairwise lists.
+        '''
+        contexts = []
+        responses = []
         with open(path, 'r') as f:
             for line in f.readlines():
                 try:
-                    line = line.strip().split()
-                    idx = line[0]
-                    content = ' '.join(line[1:])
-                    relations[idx] = content
+                    line = [ele.strip('"') for ele in line.strip().split('$')]
+                    contexts.append(line[0])
+                    responses.append(line[1])
                 except:
                     print("[DATALOADER] : Skipped line :",line)
                     continue
-        return relations
+        return contexts, responses
 
-    def createVocab(self, relations):
+    def createVocab(self, contexts, responses, vocab_filepath):
+        '''
+        create the vocab for specific movie, (general_vocab+movie_vocab)
+        '''
+        general_vocab = pickle.load(open(vocab_filepath, 'rb'))
         vocab = []
-        for idx in relations:
-            line = relations[idx].split()
+        for line in contexts+responses:
+            line = line.split()
             for word in line:
                 if word not in vocab:
                     vocab.append(word)
