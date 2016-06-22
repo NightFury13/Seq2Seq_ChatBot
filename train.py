@@ -6,8 +6,9 @@ from keras.engine.training import slice_X
 from keras.layers import Activation, TimeDistributed, Dense, RepeatVector, recurrent
 import numpy as np
 from six.moves import range
+import os
 
-import utils
+from utils import progressBar, dataLoader, genVocabCreator
 
 
 class CharacterTable(object):
@@ -40,6 +41,25 @@ class colors:
     ok = '\033[92m'
     fail = '\033[91m'
     close = '\033[0m'
+
+#------- Global Variables ---------#
+gen_vocab_filepath = 'new_data/joined_data.txt'
+gen_vocab_outpath  = 'vocab.pickle'
+content_filepath   = 'new_data/out_assassinscreed.tsv'
+#----------------------------------#
+
+#--------- Load the gen-vocab ----------#
+gen_vocab = []
+if not os.path.isfile(gen_vocab_outpath):
+    # Create the vocab
+    gen_vocab = genVocabCreator(gen_vocab_filepath)
+    gen_vocab.saveVocabToFile(gen_vocab_outpath)
+#---------------------------------------#
+
+#--------- Load the context-response pairs -----------#
+dataset = dataLoader(content_filepath, gen_vocab_outpath) # access data as dataset.contexts, dataset.responses
+#-----------------------------------------------------#
+
 
 # Parameters for the model and dataset
 TRAINING_SIZE = 50000

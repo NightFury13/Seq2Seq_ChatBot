@@ -2,6 +2,7 @@
 Data loader class that parses the reddit data into a format suitable for the model.
 """
 import pickle
+from progressBar import printProgress as PP
 
 class dataLoader(object):
     '''
@@ -20,15 +21,19 @@ class dataLoader(object):
         '''
         contexts = []
         responses = []
+	print("[Data-Loader] : Loading the context-response pairs...")
         with open(path, 'r') as f:
+	    lines = f.readlines()
+          
+            idx = 0
+            total = len(lines)
+            PP(idx, total, prefix='Progress:', suffix='Complete', barLength=100)
             for line in f.readlines():
-                try:
-                    line = [ele.strip('"') for ele in line.strip().split('$')]
-                    contexts.append(line[0])
-                    responses.append(line[1])
-                except:
-                    print("[DATALOADER] : Skipped line :",line)
-                    continue
+            	line = [ele.strip('"') for ele in line.strip().split('$')]
+                contexts.append(line[0])
+                responses.append(line[1])
+		idx += 1
+		PP(idx, total, prefix='Progress:', suffix='Complete', barLength=100)
         return contexts, responses
 
     def createVocab(self, vocab_filepath):
@@ -37,10 +42,17 @@ class dataLoader(object):
         '''
         general_vocab = pickle.load(open(vocab_filepath, 'rb'))
         vocab = []
+	
+	print("[Data-Loader] : Creating vocab from context-response pairs...")
+        idx = 0
+        total = len(self.contexts+self.responses)
+        PP(idx, total, prefix='Progress:', suffix='Complete', barLength=100)
         for line in self.contexts+self.responses:
             line = line.split()
             for word in line:
                 if word not in vocab:
                     vocab.append(word)
+		idx += 1
+		PP(idx, total, prefix='Progress:', suffix='Complete', barLength=100)
         return vocab
 
