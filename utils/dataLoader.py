@@ -12,7 +12,7 @@ class dataLoader(object):
         class initializer function.
         '''
         self.contexts, self.responses = self.readContentFile(content_filepath) #id-content relations
-        self.vocab = self.createVocab(self.contexts, self.responses, vocab_filepath)
+        self.vocab = self.createVocab(vocab_filepath)
 
     def readContentFile(self, path):
         '''
@@ -31,15 +31,16 @@ class dataLoader(object):
                     continue
         return contexts, responses
 
-    def createVocab(self, contexts, responses, vocab_filepath):
+    def createVocab(self, vocab_filepath):
         '''
         create the vocab for specific movie, (general_vocab+movie_vocab)
         '''
         general_vocab = pickle.load(open(vocab_filepath, 'rb'))
         vocab = []
-        for line in contexts+responses:
+        for line in self.contexts+self.responses:
             line = line.split()
             for word in line:
                 if word not in vocab:
                     vocab.append(word)
         return vocab
+
