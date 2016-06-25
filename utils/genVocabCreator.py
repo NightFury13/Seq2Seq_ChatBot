@@ -1,4 +1,12 @@
 """
+@ NOTE : THIS CLASS IS NO LONGER IN USE. WE USE A CHAR-LEVEL MODEL.
+"""
+
+
+
+
+
+"""
 Vocabulary generator class to create the general vocabulary from data of all movies to give enough context words for training.
 """
 from progressBar import printProgress as PP
