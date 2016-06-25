@@ -45,9 +45,10 @@ class colors:
     close = '\033[0m'
 
 #------- Global Variables ---------#
-content_filepath   = 'new_data/out_TheSimpsons.tsv'
-chars = '0123456789+/-*=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,?(){}[]&#_ ' # Char-Level Vocabulary.
-TRUNCATE_SIZE = 20000
+content_filepath   	= 'new_data/out_TheSimpsons.tsv'
+model_outpath		= 'models'
+chars 			= '0123456789+/-*=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,?(){}[]&#_ ' # Char-Level Vocabulary.
+TRUNCATE_SIZE 		= 20000
 #----------------------------------#
 
 #--------- Load the context-response pairs -----------#
@@ -143,5 +144,10 @@ for iteration in range(1, 200):
         print('---')
 
     if iteration%10==0:
+	model_saveto = model_outpath+'/'+content_filepath.split('/')[-1].split('.')[0]+'_weights_iter_'+str(iteration)+'.h5'
+	model.save_weights(model_saveto)
 	gc.collect()
 #-----------------------------------------------------#
+model_saveto = model_outpath+'/'+content_filepath.split('/')[-1].split('.')[0]+'_weights_final.h5'
+print('[Model] : Saving trained model to', model_saveto)
+model.save_weights(model_saveto)
