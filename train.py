@@ -8,6 +8,7 @@ from keras.layers import Activation, TimeDistributed, Dense, RepeatVector, recur
 import numpy as np
 from six.moves import range
 import os
+import gc
 
 from utils import progressBar, dataLoader, genVocabCreator
 
@@ -60,7 +61,7 @@ expected = dataset.responses[:TRUNCATE_SIZE]
 
 RNN = recurrent.LSTM
 HIDDEN_SIZE = 512
-BATCH_SIZE = 128
+BATCH_SIZE = 10
 LAYERS = 3
 X_MAXLEN = len(max(questions, key=len))
 Y_MAXLEN = len(max(expected, key=len))
@@ -112,6 +113,9 @@ model.add(TimeDistributed(Dense(len(chars))))
 model.add(Activation('softmax'))
 #-----------------------------------------------------#
 
+# Free some unused space.
+gc.collect()
+
 #--------------- Train the Model ---------------------#
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
@@ -137,4 +141,7 @@ for iteration in range(1, 200):
         print('T', correct)
         print(colors.ok + '☑' + colors.close if correct == guess else colors.fail + '☒' + colors.close, guess)
         print('---')
+
+    if iteration%10==0:
+	gc.collect()
 #-----------------------------------------------------#
