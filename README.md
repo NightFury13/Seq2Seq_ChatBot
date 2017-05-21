@@ -1,6 +1,6 @@
 # Seq2Seq_ChatBot
 
-###Keras Flavour
+### Keras Flavour
 I'm assuming the Theano-backend version of Keras. Make sure you have [installed Keras](https://github.com/fchollet/keras#installation).
 
 Apart from this you'll need the following python libraries.
@@ -11,13 +11,13 @@ Numpy             : `sudo -E pip install numpy`
 
 Pickle            : pickle (aread installed)
 
-###Usage
+### Usage
 From the root of the github directory,
 ```python
 $> THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python train.py
 ```
 
-###IMP Parameters
+### IMP Parameters
 Inside ~/train.py, there are a set of global-variables,
 ```python
 #------- Global Variables ---------#
